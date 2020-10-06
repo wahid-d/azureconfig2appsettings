@@ -1,7 +1,24 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<SurveyPrompt Title="Wanna try out the cute little DARK theme? 😀" />
 
-Welcome to your new app.
+<div class="row">
+  <div class="col-12 col-md-6">
+      <div class="row justify-content-center">
+        <h2>Azure Config json</h2>
+      </div>
+  </div>
+  <div class="col-12 col-md-6">
+      <div class="row justify-content-center">
+        <h2>Appsettings json</h2>
+      </div>
+  </div>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        //var forecasts = await Http.GetFromJsonAsync<string[]>("sample-data/weather.json");
+    }
+}
