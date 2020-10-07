@@ -1,0 +1,42 @@
+﻿@inject HttpClient Http
+
+<div class="alert alert-secondary alert-dismissible fade show mt-4" role="alert">
+    <h4 class="alert-heading">Fun fact!</h4>
+    <p><strong>@CurrentFact.Title</strong></p>
+    <hr>
+    <p class="mb-0">@CurrentFact.Detail</p>
+    <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    private QuickFact CurrentFact = new QuickFact()
+    { 
+        Title="12% of people dream entirely in black and white",
+        Detail="Before colour television was introduced, only 15% of people dreamt in colour. Older people dream in black and white more often than younger people"
+    };
+
+    static Random rnd = new Random();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var facts = await Http.GetFromJsonAsync<List<QuickFact>>("sample-data/facts.json");
+
+        var startTimeSpan = TimeSpan.Zero;
+        var periodTimeSpan = TimeSpan.FromSeconds(45);
+        var timer = new System.Threading.Timer((e) =>
+        {
+            int r = rnd.Next(facts.Count);
+            CurrentFact = facts[r]; 
+            StateHasChanged();   
+        }, null, startTimeSpan, periodTimeSpan);
+    }
+
+    public class QuickFact
+    {
+        public string Title { get; set; }
+        public string Detail { get; set; }
+    }
+}

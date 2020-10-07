@@ -1,24 +1,90 @@
 ﻿@page "/"
+@using BlazorMonaco
+@using BlazorMonaco.Bridge
 
-<SurveyPrompt Title="Wanna try out the cute little DARK theme? 😀" />
+@inject IJSRuntime JsRuntime
 
-<div class="row">
-  <div class="col-12 col-md-6">
-      <div class="row justify-content-center">
-        <h2>Azure Config json</h2>
+<Alert />
+
+<div class="hidden-for-alert"></div>
+
+<div class="vh-100 mt-4 header-line">
+    <div class="row mb-2">
+        <div class="col-12 col-md-6 justify-content-center">
+            <h4>Azure Config file</h4>
+        </div>
+        <div class="col-12 col-md-6 justify-content-center">
+            <button @onclick="ClipboardClicked" class="btn btn-secondary btn-lg">
+              <i class="oi oi-clipboard mr-2"></i>Clipboard</button>
+        </div>
+    </div>
+
+    <div class="row h-100">
+      <div class="col-12 col-md-6 h-75">
+          <MonacoEditor OnDidPaste="OnPasted" @ref="_editor" Id="input-editor" CssClass="h-100 rounded" ConstructionOptions="InputOptions"/>
       </div>
-  </div>
-  <div class="col-12 col-md-6">
-      <div class="row justify-content-center">
-        <h2>Appsettings json</h2>
+      <div class="col-12 col-md-6 h-75">
+          <MonacoEditor @ref="_output" Id="output-editor" CssClass="h-100 rounded" ConstructionOptions="OutputOptions"/>
       </div>
-  </div>
+    </div>
 </div>
 
 
 @code {
-    protected override async Task OnInitializedAsync()
+
+    MonacoEditor _editor;
+    MonacoEditor _output;
+
+    private async Task ClipboardClicked()
     {
-        //var forecasts = await Http.GetFromJsonAsync<string[]>("sample-data/weather.json");
+      Console.WriteLine("Clicked");
+        await JsRuntime.InvokeAsync<string>("Clipboard.copyToClipboard", await _output.GetValue());
+
     }
+    private StandaloneEditorConstructionOptions OutputOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Value = "",
+            Theme = "vs-dark",
+            AutomaticLayout = true,
+            AutoIndent = true,
+            ScrollBeyondLastLine = false,
+            ScrollBeyondLastColumn = 0,
+            ReadOnly = true
+        };
+    }
+
+    private StandaloneEditorConstructionOptions InputOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Value = "// paste your Azure Configuration json\n" +
+                    "// Appservice -> Configuration -> Advenced Edit\n" + 
+                    "// Copy the config json and paste here to get appsettings.json",
+            Theme = "vs-dark",
+            AutomaticLayout = true,
+            FormatOnPaste = true,
+            FormatOnType = true,
+            AutoIndent = true,
+            CodeLens = true,
+            ScrollBeyondLastLine = false,
+            ScrollBeyondLastColumn = 0
+        };
+    }
+
+    private async Task OnPasted(PasteEvent e)
+    {
+      var value = "";
+      value = await JsRuntime.InvokeAsync<string>("jsonConvertor.convert", await _editor.GetValue());
+      await _output.SetValue(value);
+    }
+
+    protected override void OnInitialized()
+    {
+
+    }
+
 }
