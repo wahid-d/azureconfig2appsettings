@@ -6,6 +6,16 @@ html, body {
     color: #fdf6e3;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
 .alert.alert-secondary{
     background-color: #586e75;
     border: none;
@@ -19,6 +29,12 @@ html, body {
     border: none;
     font-weight: bold;
     text-transform: uppercase;
+}
+
+.rounded{
+    border: 2px solid rgba(255,255,255, .3) !important;
+    border-radius: 5px !important;
+    overflow: hidden;
 }
 
 #blazor-error-ui {
