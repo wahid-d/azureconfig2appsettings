@@ -37,9 +37,7 @@
 
     private async Task ClipboardClicked()
     {
-      Console.WriteLine("Clicked");
         await JsRuntime.InvokeAsync<string>("Clipboard.copyToClipboard", await _output.GetValue());
-
     }
     private StandaloneEditorConstructionOptions OutputOptions(MonacoEditor editor)
     {
@@ -75,16 +73,17 @@
         };
     }
 
+    static DateTime firstCall = DateTime.Now;
     private async Task OnPasted(PasteEvent e)
     {
-      var value = "";
-      value = await JsRuntime.InvokeAsync<string>("jsonConvertor.convert", await _editor.GetValue());
-      await _output.SetValue(value);
+        var elapsingSeconds = (DateTime.Now - firstCall).TotalSeconds;
+        firstCall = DateTime.Now;
+        if(elapsingSeconds > 1)
+        {
+            var value = "";
+            value = await JsRuntime.InvokeAsync<string>("jsonConvertor.convert", await _editor.GetValue());
+            await _output.SetValue(value);   
+        }
+
     }
-
-    protected override void OnInitialized()
-    {
-
-    }
-
 }
