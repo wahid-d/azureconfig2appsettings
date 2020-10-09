@@ -1,7 +1,8 @@
 window.jsonConvertor = {
   convert: function (json) {
+    let obj = {};
     try {
-      let obj = JSON.parse(json);
+        obj = JSON.parse(json);
     } catch (e) {
         showAlert('alert-warning', 'Error!', 'It seems that you are provding a wrong JSON format. Please confirm that your JSON string is valid...');
         return;
@@ -42,9 +43,6 @@ window.jsonConvertor = {
       value = false;
       return value;
     }
-
-    console.log(value + "       " + this.isNum(value));
-
     return this.isNum(value) && Number(value) ? Number(value) : value;
   },
   isNum: function checkNum(str) {
