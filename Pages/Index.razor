@@ -19,15 +19,19 @@
         </div>
     </div>
 
-    <div class="row h-100">
-      <div class="col-12 col-md-6 h-75">
+    <div class="row h-100 mb-3">
+      <div class="col-12 col-md-6">
           <MonacoEditor OnDidPaste="OnPasted" @ref="_editor" Id="input-editor" CssClass="h-100 rounded" ConstructionOptions="InputOptions"/>
       </div>
-      <div class="col-12 col-md-6 h-75">
+      <div class="col-12 col-md-6">
           <MonacoEditor @ref="_output" Id="output-editor" CssClass="h-100 rounded" ConstructionOptions="OutputOptions"/>
       </div>
     </div>
+
+    <Footer/>
 </div>
+
+
 
 
 @code {
